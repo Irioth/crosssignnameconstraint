@@ -22,7 +22,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/namecoin/crosssignnameconstraint"
+	"github.com/Irioth/crosssignnameconstraint"
 	"gopkg.in/hlandau/easyconfig.v1"
 	"gopkg.in/hlandau/easyconfig.v1/cflag"
 )
@@ -30,23 +30,19 @@ import (
 var (
 	flagGroup                = cflag.NewGroup(nil, "cert")
 	rootCommonNamePrefixFlag = cflag.String(flagGroup,
-		"root-cn-prefix", "Namecoin Restricted CKBI Root CA for ",
+		"root-cn-prefix", "_Restricted Root CA for ",
 		"Prefix to apply to the CommonName of the generated root CA")
 	intermediateCommonNamePrefixFlag = cflag.String(flagGroup,
 		"intermediate-cn-prefix",
-		"Namecoin Restricted CKBI Intermediate CA for ",
-		"Prefix to apply to the CommonName of the generated "+
-			"intermediate CA")
-	excludedDomainFlag = cflag.String(flagGroup,
-		"excluded-domain", ".bit",
-		"Block the input root CA from certifying for this DNS "+
-			"domain name.")
+		"_Restricted Intermediate CA for ",
+		"Prefix to apply to the CommonName of the generated intermediate CA")
+	permittedDomainFlag = cflag.String(flagGroup,
+		"permitted-domains", ".bit",
+		"Block the input root CA from certifying anything except this DNS domain name.")
 	inputCAPathFlag = cflag.String(flagGroup,
-		"input-root-ca-path", "", "Path to the input root CA (must "+
-			"be in DER format)")
+		"input-root-ca-path", "", "Path to the input root CA (must be in DER format)")
 	outputPrefixFlag = cflag.String(flagGroup,
-		"output-prefix", "", "Prefix of paths for writing the "+
-			"output CA's (will be in DER format)")
+		"output-prefix", "", "Prefix of paths for writing the output CA's (will be in DER format)")
 )
 
 func main() {
@@ -75,7 +71,7 @@ func main() {
 		crosssignnameconstraint.GetCrossSignedDER(
 			rootCommonNamePrefixFlag.Value(),
 			intermediateCommonNamePrefixFlag.Value(),
-			excludedDomainFlag.Value(), inputCADER)
+			permittedDomainFlag.Value(), inputCADER)
 	if err != nil {
 		log.Fatalf("Couldn't process input CA: %s", err)
 	}

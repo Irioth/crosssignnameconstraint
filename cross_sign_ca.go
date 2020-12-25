@@ -34,7 +34,7 @@ import (
 // cross-signed CA is signed by the intermediate CA, but is otherwise identical
 // to the certificate encoded in originalDERBytes.
 func GetCrossSignedDER(rootCommonNamePrefix string,
-	intermediateCommonNamePrefix string, excludedDomain string,
+	intermediateCommonNamePrefix string, permittedDomain string,
 	originalDERBytes []byte) ([]byte, []byte, []byte, error) {
 	root, rootPriv, err := generateRootCA(rootCommonNamePrefix, originalDERBytes)
 	if err != nil {
@@ -42,7 +42,7 @@ func GetCrossSignedDER(rootCommonNamePrefix string,
 	}
 
 	intermediate, intermediatePriv, err := generateIntermediateCA(
-		intermediateCommonNamePrefix, excludedDomain, originalDERBytes,
+		intermediateCommonNamePrefix, permittedDomain, originalDERBytes,
 		root, rootPriv)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("Error generating intermediate CA: %s", err)

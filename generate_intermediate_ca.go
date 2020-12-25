@@ -36,7 +36,7 @@ import (
 
 // Returns cert, private key, error
 // nolint: lll
-func generateIntermediateCA(commonNamePrefix string, excludedDomain string, originalDERBytes []byte, rootDERBytes []byte, rootPrivateKey interface{}) ([]byte, interface{}, error) {
+func generateIntermediateCA(commonNamePrefix string, permittedDomain string, originalDERBytes []byte, rootDERBytes []byte, rootPrivateKey interface{}) ([]byte, interface{}, error) {
 	fingerprintArray := sha256.Sum256(originalDERBytes)
 	hexFingerprint := strings.ToUpper(hex.EncodeToString(fingerprintArray[:]))
 
@@ -115,7 +115,7 @@ func generateIntermediateCA(commonNamePrefix string, excludedDomain string, orig
 		BasicConstraintsValid: true,
 
 		PermittedDNSDomainsCritical: true,
-		ExcludedDNSDomains:          []string{excludedDomain},
+		PermittedDNSDomains:         strings.Split(permittedDomain, ","),
 	}
 
 	//hosts := strings.Split(*host, ",")
